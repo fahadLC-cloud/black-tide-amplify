@@ -1,0 +1,41 @@
+{
+  "name": "black-tide",
+  "version": "2.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Black Tide - pirate ship battle game on AWS Amplify (serverless)",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "sandbox": "ampx sandbox",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test": "tsx tests/selftest.js"
+  },
+  "dependencies": {
+    "aws-amplify": "^6.6.0"
+  },
+  "devDependencies": {
+    "@aws-amplify/backend": "^1.0.0",
+    "@aws-amplify/backend-cli": "^1.0.0",
+    "@aws-sdk/client-cognito-identity-provider": "^3.600.0",
+    "@eslint/js": "^9.0.0",
+    "@types/aws-lambda": "^8.10.0",
+    "@types/node": "^20.0.0",
+    "aws-cdk-lib": "^2.150.0",
+    "constructs": "^10.3.0",
+    "esbuild": "^0.23.0",
+    "eslint": "^9.0.0",
+    "globals": "^15.0.0",
+    "prettier": "^3.3.0",
+    "tsx": "^4.16.0",
+    "typescript": "^5.5.0",
+    "typescript-eslint": "^8.0.0",
+    "vite": "^5.4.0"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

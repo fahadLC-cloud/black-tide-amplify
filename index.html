@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Black Tide</title>
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body>
+    <header id="bar" hidden>
+      <h1>Black Tide</h1>
+      <nav>
+        <button data-go="lobby">Play</button><button data-go="yard">Shipyard</button
+        ><button data-go="upgrade">Upgrade</button> <button data-go="board">Leaderboard</button
+        ><button data-go="profile">Profile</button><button data-go="admin" id="adminNav" hidden>Admin</button
+        ><button id="signout">Sign out</button>
+      </nav>
+      <span id="who"></span>
+    </header>
+    <main>
+      <section class="screen" id="loading">
+        <h2>Black Tide</h2>
+        <p>Checking your session...</p>
+      </section>
+      <section class="screen" id="auth" hidden>
+        <h2>Black Tide</h2>
+        <p>
+          Enter your email and password to create an account, then choose your captain, flag, ship, and battle setup.
+        </p>
+        <form id="authForm" class="auth-form">
+          <label for="authEmail">Email</label><input id="authEmail" type="email" autocomplete="email" required />
+          <label for="authPassword">Password</label
+          ><input id="authPassword" type="password" autocomplete="new-password" minlength="8" required />
+          <button id="go" class="big" type="submit">Create account</button>
+        </form>
+        <p id="authToggle">Already have an account? <button id="switchAuth" type="button">Sign in</button></p>
+        <p id="msg" class="err" role="status"></p>
+      </section>
+      <section class="screen" id="profileError" hidden>
+        <h2>Could not load your captain profile</h2>
+        <p id="profileErrorText" class="err"></p>
+        <button id="retryProfile" class="big">Try again</button>
+      </section>
+      <section class="screen" id="lobby" hidden>
+        <div class="captain-pick">
+          <div class="captain-pick-heading">
+            <p class="eyebrow">YOUR COMMANDER</p>
+            <h2>Choose your captain</h2>
+            <p>Select the character who will lead your fleet.</p>
+          </div>
+          <div id="captains" class="captain-grid"></div>
+          <p id="captainPrompt" class="captain-prompt">Choose a captain to continue to battle.</p>
+        </div>
+        <h2>Choose your faction flag</h2>
+        <p id="flagPrompt" class="captain-prompt">Choose a faction flag. This choice is permanent.</p>
+        <div id="factions" class="row"></div>
+        <h2>Choose battle size</h2>
+        <div id="modes" class="row"></div>
+        <h2 id="botDifficultyTitle">Choose practice difficulty</h2>
+        <p id="botDifficultyPrompt" class="captain-prompt">Choose a level before practicing against a bot.</p>
+        <div id="botDifficulties" class="row" aria-labelledby="botDifficultyTitle">
+          <button type="button" data-difficulty="easy" aria-pressed="false">Easy<small>Mostly sloops</small></button>
+          <button type="button" data-difficulty="medium" aria-pressed="false">Medium<small>Frigates</small></button>
+          <button type="button" data-difficulty="hard" aria-pressed="false">
+            Hard<small>Galleons and Man-of-War</small>
+          </button>
+        </div>
+        <p id="fleet"></p>
+        <div class="row">
+          <button id="find" class="big">Find a match</button
+          ><button id="bots" class="big alt">Practice against bots</button><button id="cancel">Cancel search</button>
+        </div>
+        <p id="qstat"></p>
+      </section>
+      <section class="screen" id="yard" hidden>
+        <div class="yard-head">
+          <div>
+            <p class="eyebrow">FLEET COMMAND</p>
+            <h2>Shipyard</h2>
+            <p>Choose a hull, inspect its capabilities, and prepare your next voyage.</p>
+          </div>
+          <div class="yard-wallet" id="yardWallet"></div>
+        </div>
+        <div class="yard-stage">
+          <canvas id="yardScene" aria-label="Three dimensional shipyard preview"></canvas>
+          <div class="stage-caption">
+            <b id="stageName">Sloop</b><span id="stageClass">LIGHT VESSEL · CLASS I</span>
+          </div>
+        </div>
+        <div class="yard-detail">
+          <div>
+            <h3 id="shipTitle"></h3>
+            <p id="shipDesc"></p>
+          </div>
+          <div id="shipStats" class="ship-stats"></div>
+          <div id="shipAction"></div>
+        </div>
+        <h3 class="fleet-label">Available vessels <small>SELECT A SHIP TO INSPECT</small></h3>
+        <div id="ships" class="ship-strip"></div>
+      </section>
+      <section class="screen" id="upgrade" hidden>
+        <div class="yard-head">
+          <div>
+            <p class="eyebrow">REFIT &amp; ARMAMENT</p>
+            <h2>Upgrade your ship</h2>
+            <p>Refit the selected vessel and configure its broadside.</p>
+          </div>
+          <div class="yard-wallet" id="upgradeWallet"></div>
+        </div>
+        <div class="upgrade-stage">
+          <canvas id="upgradeScene" aria-label="Selected ship preview in the refit dock"></canvas>
+          <div class="stage-caption"><b id="upgradeShipName">Sloop</b><span>SELECTED VESSEL · REFIT DOCK</span></div>
+        </div>
+        <div class="upgrade-layout">
+          <section class="upgrade-panel">
+            <h3>Gun ports</h3>
+            <p>
+              Click the ports to set cannon count. Arrows show each broadside’s firing direction: Q fires to port, E to
+              starboard.
+            </p>
+            <canvas
+              id="slots"
+              width="560"
+              height="240"
+              aria-label="Click a gun port to configure cannons and view broadside aim"
+            ></canvas>
+          </section>
+          <div class="upgrade-panel">
+            <h3>Hull improvements</h3>
+            <div id="parts"></div>
+          </div>
+          <div class="upgrade-panel">
+            <h3>Vessel specifications</h3>
+            <div id="sheet"></div>
+          </div>
+        </div>
+      </section>
+      <section class="screen" id="board" hidden>
+        <h2>Leaderboard</h2>
+        <table id="rows"></table>
+      </section>
+      <section class="screen" id="profile" hidden>
+        <div class="yard-head">
+          <div>
+            <p class="eyebrow">PERSONAL LOGBOOK</p>
+            <h2>Captain's log</h2>
+          </div>
+        </div>
+        <div class="profile-showcase">
+          <canvas id="profileScene" aria-label="Your ship with your captain aboard"></canvas>
+          <div class="profile-captain" id="profileCaptain"></div>
+        </div>
+        <div id="log" class="profile-log"></div>
+        <div class="upgrade-panel flag-box">
+          <h3>Your flag image</h3>
+          <p>
+            Upload a PNG or JPG (max 2 MB). It is stored in Amazon S3 and shown to other captains on the leaderboard.
+          </p>
+          <img id="flagImg" alt="Your flag" hidden /><input id="flagFile" type="file" accept="image/*" /><button
+            id="flagUp"
+          >
+            Upload flag image
+          </button>
+          <p id="flagMsg" class="captain-prompt"></p>
+        </div>
+      </section>
+      <section class="screen" id="admin" hidden>
+        <h2>Admin panel</h2>
+        <p>Only members of the Cognito group <b>Admins</b> can read and delete every player record.</p>
+        <table id="adminRows"></table>
+      </section>
+      <section class="screen" id="battle" hidden>
+        <canvas id="game"></canvas>
+        <div id="pauseMenu" class="pause-overlay" hidden>
+          <div class="pause-card">
+            <p class="eyebrow">BATTLE PAUSED</p>
+            <h2>Take a moment, Captain</h2>
+            <p>The match is paused. Resume when you are ready, or leave this battle.</p>
+            <button id="pauseResume" class="big">Resume battle</button
+            ><button id="pauseQuit" class="big alt">Quit to dashboard</button>
+          </div>
+        </div>
+        <div id="resultMenu" class="pause-overlay result-overlay" hidden>
+          <div class="pause-card result-card">
+            <p class="eyebrow">BATTLE COMPLETE</p>
+            <h2 id="rt"></h2>
+            <div id="rb"></div>
+            <button id="back" class="big">Back to port</button>
+          </div>
+        </div>
+      </section>
+    </main>
+    <dialog id="signoutDialog" aria-labelledby="signoutTitle" aria-describedby="signoutDescription">
+      <div class="signout-card">
+        <h2 id="signoutTitle">Sign out of Black Tide?</h2>
+        <p id="signoutDescription">You will need to sign in again to play.</p>
+        <p id="signoutBattle" hidden>Your current battle will be abandoned.</p>
+        <div class="row">
+          <button id="confirmSignout" class="big">Yes, sign out</button
+          ><button id="cancelSignout" type="button">Cancel</button>
+        </div>
+      </div>
+    </dialog>
+    <script type="module" src="/src/app.js"></script>
+  </body>
+</html>
