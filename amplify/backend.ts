@@ -40,9 +40,12 @@ backend.addOutput({
 });
 
 // ---- Requirement 7: CloudWatch dashboard + alarms (Lambda logs go to CloudWatch Logs automatically) ----
+const envSuffix = (process.env.AWS_BRANCH || 'sandbox').replace(/[^a-zA-Z0-9_-]/g, '-');
 const gameFn = backend.gameApi.resources.lambda;
 const confirmFn = backend.postConfirmation.resources.lambda;
-const dashboard = new Dashboard(apiStack, 'BlackTideDashboard', { dashboardName: 'BlackTide-Monitoring' });
+const dashboard = new Dashboard(apiStack, 'BlackTideDashboard', {
+  dashboardName: `BlackTide-Monitoring-${envSuffix}`,
+});
 dashboard.addWidgets(
   new GraphWidget({
     title: 'game-api Lambda: invocations and errors',
@@ -62,7 +65,7 @@ dashboard.addWidgets(
   })
 );
 new Alarm(apiStack, 'GameApiErrorsAlarm', {
-  alarmName: 'BlackTide-GameApi-Errors',
+  alarmName: `BlackTide-GameApi-Errors-${envSuffix}`,
   metric: gameFn.metricErrors({ period: Duration.minutes(5) }),
   threshold: 1,
   evaluationPeriods: 1,
@@ -70,7 +73,7 @@ new Alarm(apiStack, 'GameApiErrorsAlarm', {
   treatMissingData: TreatMissingData.NOT_BREACHING,
 });
 new Alarm(apiStack, 'Api5xxAlarm', {
-  alarmName: 'BlackTide-Api-5XX',
+  alarmName: `BlackTide-Api-5XX-${envSuffix}`,
   metric: restApi.metricServerError({ period: Duration.minutes(5) }),
   threshold: 1,
   evaluationPeriods: 1,
