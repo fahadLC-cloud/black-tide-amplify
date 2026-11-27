@@ -10,8 +10,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with: { node-version: 20, cache: npm }
-      - run: npm ci
+        with: { node-version: 22, cache: npm }
+      - run: npm install --no-audit --no-fund
       - run: npm run lint
 
   format:
@@ -20,8 +20,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with: { node-version: 20, cache: npm }
-      - run: npm ci
+        with: { node-version: 22, cache: npm }
+      - run: npm install --no-audit --no-fund
       - run: npm run format:check
 
   secret-scan:
@@ -53,8 +53,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with: { node-version: 20, cache: npm }
-      - run: npm ci
+        with: { node-version: 22, cache: npm }
+      - run: npm install --no-audit --no-fund
       - uses: snyk/actions/node@master
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
@@ -67,6 +67,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with: { node-version: 20, cache: npm }
-      - run: npm ci
+        with: { node-version: 22, cache: npm }
+      - run: npm install --no-audit --no-fund
       - run: npm test
